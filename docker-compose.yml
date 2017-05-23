@@ -11,3 +11,10 @@ services:
       - 5000:3000
     depends_on:
       - db
+
+  tests:
+    build: ./delmo/
+    image: demo-blog-tests
+    depends_on:
+      - db
+      - web
