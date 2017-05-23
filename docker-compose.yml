@@ -1,0 +1,13 @@
+# https://docs.docker.com/compose/rails/
+version: '2'
+services:
+  db:
+    image: postgres
+  web:
+    build: .
+    image: demo-blog
+    command: /myapp/startup.sh
+    ports:
+      - 5000:3000
+    depends_on:
+      - db
