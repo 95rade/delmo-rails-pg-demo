@@ -9,6 +9,10 @@ bin/rails s
 
 View the application at https://localhost:3000
 
+Now, stop/disable your local PostgreSQL service.
+
+View the application at https://localhost:3000 again and it will fail - the Rails app requires access to the database for every incoming request.
+
 ## Next
 
 In the next step we will containerize this Rails app using Docker, and run a small `docker-compose` cluster with this `web` app linked to a PostgreSQL `db` container.
