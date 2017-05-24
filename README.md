@@ -1,24 +1,19 @@
-# README
+# Delmo demo - Step 1
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a normal Rails app. It requires PostgreSQL locally. If you don't have Ruby and/or PostgreSQL setup, then fear not - just [skip to the next step](#next) where we dockerize it all.
 
-Things you may want to cover:
+```
+bundle install
+bin/rails s
+```
 
-* Ruby version
+View the application at https://localhost:3000
 
-* System dependencies
+## Next
 
-* Configuration
+In the next step we will containerize this Rails app using Docker, and run a small `docker-compose` cluster with this `web` app linked to a PostgreSQL `db` container.
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```
+git checkout step-2
+cat README.md
+```
