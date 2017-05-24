@@ -1,24 +1,26 @@
-# README
+# Delmo demo - Step 2
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+In this step we will containerize this Rails app using Docker, and run a small `docker-compose` cluster with this `web` app linked to a PostgreSQL `db` container.
 
-Things you may want to cover:
+```
+docker-compose up
+```
 
-* Ruby version
+View the application at https://docker-ip:5000
 
-* System dependencies
+To show the "missing database" issue, in another terminal window run:
 
-* Configuration
+```
+docker-compose stop db
+```
 
-* Database creation
+Now view the application again at https://docker-ip:5000 and it should fail.
 
-* Database initialization
+## Next
 
-* How to run the test suite
+Next we will introduce Delmo to show this failure case within a simple test.
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```
+git checkout step-3
+cat README.md
+```
