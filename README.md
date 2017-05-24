@@ -1,3 +1,10 @@
+# Delmo demo - Step 3
+
+Delmo will allow us to recreate this failure scenario without manual steps.
+
+In this step we will use Delmo bring up the `docker-compose` cluster, run `docker-compose stop db` and then run a test script to assert that the web is still working (status `200` rather than HTTP status `500`).
+
+In Step 3 this test will fail. We will fix it in Step 4.
 
 ## Run tests
 
@@ -56,4 +63,94 @@ Executing - <Wait: home-page-running, Timeout: 30s>
 (2) home-page-running | curl: (22) The requested URL returned error: 500 Internal Server Error
 FAIL! Step - <Wait: home-page-running, Timeout: 30s> did not complete as expected.
 REASON - Task 'home-page-running' never completed successfully
+```
+
+## Test scripts
+
+In the test output above we are running the same `home-page-running` test twice - once when the `web` and `db` containers are running, and once when only `web` container is running. It is the latter occasion that we get the `500` status failure.
+
+The `home-page-running` test is just a simple shell script `delmo/tasks/home-page-running.sh`:
+
+```bash
+#!/bin/bash
+
+set -e
+
+curl -f -I http://web:3000/
+```
+
+You could make this as advanced as you like, and write it in any programming language you like. The point is it can also be as simple as you like - a simple `curl -f` to check that the endpoint basically works (`200`), rather than basically fails (`500`).
+
+## Delmo test suite
+
+When we run `delmo` we are implicitly running `delmo -f delmo.yml`.
+
+The `delmo.yml` file describes one or more test scenarios. Each test scenario starts with a fresh `docker-compose up` cluster.
+
+From `delmo.yml` we are describing a single test scenario:
+
+```yaml
+tests:
+- name: db-outage
+  spec:
+  - {wait: home-page-running, timeout: 30}
+  - destroy: [db]
+  - {wait: db-stopped, timeout: 30}
+  - {wait: home-page-running, timeout: 30}
+```
+
+The test `db-outage` has four steps:
+1. Check that the `web` home page works with the full `docker-compose up` cluster running.
+2. Stop the `db` container.
+3. Confirm that the `db` container is not working.
+4. Check that the `web` home page works now.
+
+The `home-page-running` and `db-stopped` actions map to executable commands defined elsewhere in `delmo.yml`:
+
+```yaml
+tasks:
+- {name: db-stopped, command: "/tasks/db-stopped.sh"}
+- {name: home-page-running, command: "/tasks/home-page-running.sh"}
+```
+
+The commands referenced, such as `/tasks/home-page-running.sh`, are relative to the Docker container within which they are executed.
+
+That is, when `delmo` is running there is an additional container within which our delmo tasks are executed. The tasks above are not run within `web` nor `db`; rather they are run within an additional container.
+
+The `docker-compose.yml` in Step 3 includes this additional container:
+
+```yaml
+services:
+  ...
+  tests:
+    build: ./delmo/
+    image: demo-blog-tests
+    depends_on:
+      - db
+      - web
+```
+
+When `delmo` runs, it will re-build this `tests` container image each time.
+
+The `Dockerfile` in the example above will be found within `delmo/` subfolder:
+
+```dockerfile
+FROM demo-blog
+
+COPY ./tasks/  /tasks
+
+CMD ["/bin/true"]
+```
+
+The `tests` container in this example project is built using the `web` image - so it has Ruby in it and the Rails web app. We could use this in our test tasks if we wanted. We could also install any other dependencies we want for our test tasks.
+
+The `delmo/tasks/*` files are copied into the image's `/tasks/` folder.
+
+## Next
+
+In the next step we will fix the Rails app so that we can make the Delmo test scenario pass.
+
+```
+git checkout step-4
+cat README.md
 ```
