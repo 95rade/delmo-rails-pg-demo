@@ -9,9 +9,19 @@ bin/rails s
 
 View the application at https://localhost:3000
 
+![working](webapp-db-working.png)
+
 Now, stop/disable your local PostgreSQL service.
 
+If using [Postgres.app](https://postgresapp.com/), press the Stop button:
+
+![stop-db](postgresqlapp-stopped.png)
+
 View the application at https://localhost:3000 again and it will fail - the Rails app requires access to the database for every incoming request.
+
+The error might look similar to, or a variation of some internal error:
+
+![not-working-dev](webapp-dev-500.png)
 
 ## Next
 
