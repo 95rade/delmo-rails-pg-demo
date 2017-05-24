@@ -1,8 +1,22 @@
 
 ## Run tests
 
+To run delmo/docker-compose against a docker-machine, use the `-m machine-name` flag:
+
 ```
 delmo -m my-docker-machine
+```
+
+To run delmo/docker-compose against a local docker daemon:
+
+```
+delmo --localhost <DOCKER_HOST_IP>
+```
+or
+
+```
+export DOCKER_HOST_IP=<DOCKER_HOST_IP>
+delmo
 ```
 
 The output will look similar to:
